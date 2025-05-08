@@ -1,0 +1,19 @@
+{
+  "name": "wikstory",
+  "version": "1.0.0",
+  "description": "a git like version histoy module for wiki documents",
+  "license": "ISC",
+  "author": "Nocturnal",
+  "type": "commonjs",
+  "main": "wikstory.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "diff": "^7.0.0",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "mocha": "^11.2.2"
+  }
+}
