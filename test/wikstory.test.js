@@ -1,7 +1,7 @@
 const assert = require('assert');
 const errors = require('../Errors');
 
-const WikstoryTestClass = require('./TestClass');
+const SQLTestClass = require('./TestClass');
 
 let testString = `once there was a man
 two was a big fan
@@ -34,30 +34,21 @@ let fourthString = `dasdawdawdwd`;
 
 let wikstory = null;
 
-wikstory = new WikstoryTestClass({
-    host: 'localhost',
-    user: 'webuser',
-    password: 'webuser',
-    database: 'wiki_temp',
-    waitForConnections: true,
-    connectionLimit: 20,
-    queueLimit: 0
-});
-
-after(async () => {
-    await wikstory.delete();
-    await wikstory.disconnect();
-});
-
 describe("Instanciation of wikstory class", function () {
     it("Should create a new instance of wikstory using the test child class.", function () {
-        wikstory = new WikstoryTestClass({
+        wikstory = new SQLTestClass({
             host: 'localhost',
             user: 'webuser',
             password: 'webuser',
-            database: 'wiki_temp',
-            
+            database: 'wikstory',
+            waitForConnections: true,
+            connectionLimit: 20,
+            queueLimit: 0
         });
+    });
+
+    after(async () => {
+        await wikstory.delete();
     });
 });
 
@@ -86,27 +77,27 @@ describe("rolling back", function () {
     });
     
     it("should rollback a single time using", async ()=>{
-        await wikstory.rollBack('test');
+        await wikstory.rollback('test');
 
         const res = await wikstory.getFileWithCommit('test');
-        assert.equal(res.author, 'noc3');
+        assert.equal(res.file_text, fourthString);
     });
 
     it("should fetch a parent commit and rollback to specific commit", async ()=>{
         let res = await wikstory.getFileWithCommit('test');
         let parentHash = await wikstory.getParentCommit(res.commit_hash);
 
-        await wikstory.rollBackToCommit('test', parentHash);
+        await wikstory.rollbackToCommit('test', parentHash);
 
         res = await wikstory.getFileWithCommit('test');
-        assert.equal(res.author, 'noc2');
+        assert.equal(res.file_text, thirdString);
     });
 
     it("should rollback all commits from recent author using", async ()=>{
-        await wikstory.rollBackUsername('test');
+        await wikstory.rollbackUsername('test');
 
         let res = await wikstory.getFileWithCommit('test');
-        assert.equal(res.author, 'noc');
+        assert.equal(res.file_text, testString);
     });
 });
 
@@ -130,11 +121,16 @@ describe("testing errors", function () {
 
     it("should throw rollback on initial commit error when rolling back on init commit", async () => {
         try {
-            await wikstory.rollBack('test');
+            await wikstory.rollback('test');
         } catch (err) {
             assert(err instanceof errors.RollBackOnInitialCommit);
             return;
         }
         throw new Error("error wasn't thrown for rb on initial.");
     });
+});
+
+after(async () => {
+    await wikstory.delete();
+    await wikstory.disconnect();
 });

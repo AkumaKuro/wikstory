@@ -1,8 +1,11 @@
-const Wikstory = require("../wikstory");
+const Wikstory = require("../src/Wikstory");
+const MySQLStrategy = require("../src/dataSource/MysqlStrategy");
 
-class WikstoryTestClass extends Wikstory {
-    constructor(config) {
-        super(config);
+
+class TestSQLStrategy extends MySQLStrategy {
+    constructor(config){
+        let pool = MySQLStrategy.createPool(config);
+        super(pool);
     }
 
     async delete(){
@@ -21,4 +24,16 @@ class WikstoryTestClass extends Wikstory {
     }
 }
 
-module.exports = WikstoryTestClass;
+class SQLTestClass extends Wikstory {
+    constructor(config) {
+        let testSQLStrategy = new TestSQLStrategy(config);
+
+        super(testSQLStrategy);
+    }
+
+    async delete(){
+        await this.dataStrategy.delete();
+    }
+}
+
+module.exports = SQLTestClass;
