@@ -1,10 +1,11 @@
 const Wikstory = require("../src/Wikstory");
+const WikstoryBuilder = require('../src/WikstoryBuilder');
 const MySQLStrategy = require("../src/dataSource/MysqlStrategy");
 
 
 class TestSQLStrategy extends MySQLStrategy {
     constructor(config){
-        let pool = MySQLStrategy.createPool(config);
+        let pool = WikstoryBuilder.createMySQLPool(config);
         super(pool);
     }
 

@@ -3,12 +3,12 @@ const Diff = require('diff');
 
 const DataSourceInterface = require("./dataSource/DataSourceInterface");
 
-const {    InvalidInputError,
+const { 
+    InvalidInputError,
     RollBackOnInitialCommit,
     ItemNotFoundError,
     IdenticalCommitError,
-    NoConnectError,
-    NoDisconnectError} = require('../Errors');
+} = require('../Errors');
 
 
 function hashContent(content) {

@@ -1,4 +1,3 @@
-const mysql = require('mysql2/promise');
 const DataSourceInterface = require("./DataSourceInterface");
 const zlib = require('zlib');
 
@@ -36,26 +35,6 @@ class MySQLStrategy extends DataSourceInterface {
         super(pool);
 
         this.pool = pool;
-    }
-
-    static createPool({
-        host,
-        user,
-        password,
-        database,
-        waitForConnections,
-        connectionLimit,
-        queueLimit
-    }){
-        return mysql.createPool({
-            host: host,
-            user: user,
-            password: password,
-            database: database,
-            waitForConnections: waitForConnections, //true
-            connectionLimit: connectionLimit, //20
-            queueLimit: queueLimit, //0
-        });
     }
 
     async disconnect(){
@@ -184,7 +163,7 @@ class MySQLStrategy extends DataSourceInterface {
         if (rows.length > 0){
             return rows;
         } else {
-            throw new errors.ItemNotFoundError("Could not find commit with provided hash.");
+            return [];
         }
     }
 
