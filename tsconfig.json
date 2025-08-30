@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "es5", // Or your desired target JavaScript version
+      "target": "es2015", // Or your desired target JavaScript version
       "module": "commonjs", // Or your desired module system
       "outDir": "./dist", // This will create a 'dist' folder at the project root
       "sourceMap": true // Optional: Generates source maps for debugging

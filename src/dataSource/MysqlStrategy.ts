@@ -1,13 +1,13 @@
 export {MySQLStrategy}
 
 import {DataSourceInterface} from './DataSourceInterface';
-import zlib from 'node:zlib'
 import {ItemNotFoundError} from '../../Errors'
+import { gunzip, gzip } from 'zlib';
 
 
 function compressString(inputString) {
     return new Promise((resolve, reject) => {
-        zlib.gzip(inputString, (err, compressedBuffer) => {
+        gzip(inputString, (err, compressedBuffer) => {
             if (err) {
                 reject(err);
             } else {
@@ -20,7 +20,7 @@ function compressString(inputString) {
 function decompressString(compressedString) {
     return new Promise((resolve, reject) => {
         const buffer = Buffer.from(compressedString, 'base64'); // Decode from base64
-        zlib.gunzip(buffer, (err, decompressedBuffer) => {
+        gunzip(buffer, (err, decompressedBuffer) => {
             if (err) {
                 reject(err);
             } else {

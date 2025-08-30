@@ -1,6 +1,5 @@
 export {Wikstory}
 
-import crypto from 'crypto'
 import Diff from 'diff'
 
 import {DataSourceInterface} from "./dataSource/DataSourceInterface"
@@ -11,10 +10,11 @@ import {
     ItemNotFoundError,
     IdenticalCommitError,
 } from '../Errors'
+import { createHash } from 'crypto';
 
 
 function hashContent(content) {
-    return crypto.createHash('sha1').update(content).digest('hex').toUpperCase();
+    return createHash('sha1').update(content).digest('hex').toUpperCase();
 }
 
 class LineChange {
