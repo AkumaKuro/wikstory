@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "es5", // Or your desired target JavaScript version
+      "module": "commonjs", // Or your desired module system
+      "outDir": "./dist", // This will create a 'dist' folder at the project root
+      "sourceMap": true // Optional: Generates source maps for debugging
+    },
+    "include": [
+      "src/**/*.ts" // Specifies which TypeScript files to include in the compilation
+    ],
+    "exclude": [
+      "node_modules" // Excludes the node_modules directory from compilation
+    ]
+  }
