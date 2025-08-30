@@ -1,7 +1,6 @@
-import assert from 'assert'
-
 import { SQLTestClass } from './TestClass'
 import { IdenticalCommitError, RollBackOnInitialCommit } from '../Errors';
+import assert = require('assert');
 
 let testString = `once there was a man
 two was a big fan
