@@ -1,7 +1,11 @@
-const Wikstory = require('./Wikstory');
-const MySQLStrategy = require('./dataSource/MysqlStrategy');
+export { WikstoryBuilder }
+
+import { Wikstory } from './Wikstory'
+import { MySQLStrategy } from './dataSource/MysqlStrategy'
 
 class WikstoryBuilder{
+    type
+    client
 
     static types = {
         mysql: 'mysql',
@@ -58,5 +62,3 @@ class WikstoryBuilder{
         });
     }
 }
-
-module.exports = WikstoryBuilder;

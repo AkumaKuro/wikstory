@@ -1,8 +1,8 @@
-const DataSourceInterface = require("./DataSourceInterface");
-const zlib = require('zlib');
+export {MySQLStrategy}
 
-
-const errors = require("../../Errors");
+import {DataSourceInterface} from './DataSourceInterface';
+import zlib from 'node:zlib'
+import {ItemNotFoundError} from '../../Errors'
 
 
 function compressString(inputString) {
@@ -31,6 +31,8 @@ function decompressString(compressedString) {
 }
 
 class MySQLStrategy extends DataSourceInterface {
+    pool
+
     constructor(pool){
         super(pool);
 
@@ -103,7 +105,7 @@ class MySQLStrategy extends DataSourceInterface {
         if (rows.length > 0){
             return rows[0];
         } else {
-            throw new errors.ItemNotFoundError(`Could not find file with URI ${uri}.`);
+            throw new ItemNotFoundError(`Could not find file with URI ${uri}.`);
         }
     }
 
@@ -118,7 +120,7 @@ class MySQLStrategy extends DataSourceInterface {
             rows[0].line_text = await decompressString(rows[0].line_text);
             return rows[0];
         } else {
-            throw new errors.ItemNotFoundError("Could not find blob with provided hash.");
+            throw new ItemNotFoundError("Could not find blob with provided hash.");
         }
     }
 
@@ -147,7 +149,7 @@ class MySQLStrategy extends DataSourceInterface {
         if (rows.length > 0){
             return rows[0].parent_hash;
         } else {
-            throw new errors.ItemNotFoundError("Could not find commit with provided hash.");
+            throw new ItemNotFoundError("Could not find commit with provided hash.");
         }
     }
 
@@ -196,7 +198,7 @@ class MySQLStrategy extends DataSourceInterface {
             for(let row in rows) rows[row].line_changes = JSON.parse(rows[row].line_changes);
             return rows;
         } else {
-            throw new errors.ItemNotFoundError(`Could not find commit history for ${uri}.`);
+            throw new ItemNotFoundError(`Could not find commit history for ${uri}.`);
         }
     }
 
@@ -212,9 +214,7 @@ class MySQLStrategy extends DataSourceInterface {
         if (rows.length > 0){
             return rows[0].author;
         } else {
-            throw new errors.ItemNotFoundError("Could not find commit with provided hash.");
+            throw new ItemNotFoundError("Could not find commit with provided hash.");
         }
     }
 }
-
-module.exports = MySQLStrategy;

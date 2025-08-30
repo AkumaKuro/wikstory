@@ -1,7 +1,7 @@
-const assert = require('assert');
-const errors = require('../Errors');
+import assert from 'assert'
 
-const SQLTestClass = require('./TestClass');
+import { SQLTestClass } from './TestClass'
+import { IdenticalCommitError, RollBackOnInitialCommit } from '../Errors';
 
 let testString = `once there was a man
 two was a big fan
@@ -11,7 +11,7 @@ barely sur five d
 surrounded by six
 he avoided going to seven`;
 
-    let changeString = `once there was a man
+let changeString = `once there was a man
 two was a big fan
 he jumped off a three
 auiodwiu
@@ -32,7 +32,7 @@ he avoided going to seven`;
 
 let fourthString = `dasdawdawdwd`;
 
-let wikstory = null;
+let wikstory: SQLTestClass
 
 describe("Instanciation of wikstory class", function () {
     it("Should create a new instance of wikstory using the test child class.", function () {
@@ -112,7 +112,7 @@ describe("testing errors", function () {
         try {
             await wikstory.commit("test", testString, "noc");
         } catch (err) {
-            assert(err instanceof errors.IdenticalCommitError);
+            assert(err instanceof IdenticalCommitError);
             return;
         }
 
@@ -123,7 +123,7 @@ describe("testing errors", function () {
         try {
             await wikstory.rollback('test');
         } catch (err) {
-            assert(err instanceof errors.RollBackOnInitialCommit);
+            assert(err instanceof RollBackOnInitialCommit);
             return;
         }
         throw new Error("error wasn't thrown for rb on initial.");

@@ -1,21 +1,37 @@
-const crypto = require('crypto');
-const Diff = require('diff');
+export {Wikstory}
 
-const DataSourceInterface = require("./dataSource/DataSourceInterface");
+import crypto from 'crypto'
+import Diff from 'diff'
 
-const { 
+import {DataSourceInterface} from "./dataSource/DataSourceInterface"
+
+import { 
     InvalidInputError,
     RollBackOnInitialCommit,
     ItemNotFoundError,
     IdenticalCommitError,
-} = require('../Errors');
+} from '../Errors'
 
 
 function hashContent(content) {
     return crypto.createHash('sha1').update(content).digest('hex').toUpperCase();
 }
 
+class LineChange {
+    line: number
+    type: string
+    hash: string
+
+    constructor(line: number, type: string, hash: string) {
+        this.line = line
+        this.type = type
+        this.hash = hash
+    }
+}
+
 class Wikstory {
+    dataStrategy
+
     constructor(DataStrategy){
         if (!(DataStrategy instanceof DataSourceInterface)) throw new Error("Invalid data strategy class passed to wikstory.");
         this.dataStrategy = DataStrategy;
@@ -29,17 +45,17 @@ class Wikstory {
 
         if (typeof(uri) != "string" || typeof(text) != "string" || typeof(userName) != "string") throw new InvalidInputError("Invalid input: 'uri, text, and userName' must be non-empty strings.");
     
-        let newDict = {};
-        let newHashes = [];
+        let newDict: Map<string, string> = new Map<string, string>()
+        let newHashes: string[] = [];
         for (const [index, line] of text.split('\n').entries()){
             const hash = hashContent(line);
             newHashes[index] = hash;
             newDict[hash] = line;
         }
 
-        let blobHashes = [];
-        let blobLines = [];
-        let lineChanges = [];
+        let blobHashes: string[] = [];
+        let blobLines: string[] = [];
+        let lineChanges: LineChange[] = [];
 
         let prev = await this.dataStrategy.getFile(uri);
         let prevText = prev ? prev.file_text : null;
@@ -58,7 +74,7 @@ class Wikstory {
             }]
         } else {
             //get the hashes for the previous lines
-            let prevHashes = [];
+            let prevHashes: string[] = [];
             for (const [index, line] of prevText.split('\n').entries()){
                 const hash = hashContent(line);
                 prevHashes[index] = hash;
@@ -79,22 +95,14 @@ class Wikstory {
             //delete
             if (change.removed){
                 for (const hash of change.value){
-                    lineChanges.push({
-                        line: oldIndex,
-                        type: 'del',
-                        hash: hash
-                    });
+                    lineChanges.push(new LineChange(oldIndex, 'del', hash));
                     oldIndex++;
                 }
             }
             //add
             if (change.added){
                 for (const hash of change.value){
-                    lineChanges.push({
-                        line: newIndex,
-                        type: 'add',
-                        hash: hash
-                    });
+                    lineChanges.push(new LineChange(newIndex, 'add', hash));
                     newIndex++
                     
                     //add new lines to lists
@@ -134,10 +142,10 @@ class Wikstory {
         let fileLines = fileInfo.file_text.split('\n');
         const lineChanges = JSON.parse(fileInfo.line_changes).changes;
 
-        let deletedHashes = [];
+        let deletedHashes: string[] = [];
         //for adds remove based on line number
         for (const change of lineChanges){
-            if (change.type == 'add'){
+            if (change.type == 'add') {
                 //delete relevant lines from fileInfo.file_text
                 fileLines[change.line] = null;
 
@@ -209,13 +217,13 @@ class Wikstory {
     }
 
     async getCommitHistory(uri){
-        if (typeof(uri) != "string") throw new errors.InvalidInputError(`URI must be non-empty string.`);
+        if (typeof(uri) != "string") throw new InvalidInputError(`URI must be non-empty string.`);
 
         return await this.dataStrategy.getCommitHistory(uri);
     }
 
     async getParentCommit(hash){
-        if (typeof(hash) != "string") throw new errors.InvalidInputError("Hash must be non-empty String.");
+        if (typeof(hash) != "string") throw new InvalidInputError("Hash must be non-empty String.");
         return await this.dataStrategy.getParentCommit(hash);
     }
 
@@ -226,9 +234,7 @@ class Wikstory {
     }
 
     async blame(hash){
-        if (typeof(hash) != "string") throw new errors.InvalidInputError("Hash must be non-empty String.");
+        if (typeof(hash) != "string") throw new InvalidInputError("Hash must be non-empty String.");
         this.dataStrategy.blame(hash);
     }
 }
-
-module.exports = Wikstory;

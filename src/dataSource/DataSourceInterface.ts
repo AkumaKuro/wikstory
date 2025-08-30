@@ -1,3 +1,6 @@
+
+export {DataSourceInterface};
+
 class DataSourceInterface {
 	constructor(client) {
 		if (!client) throw new Error("No client passed to data source strategy.");
@@ -55,5 +58,3 @@ class DataSourceInterface {
 		throw new Error("Method 'blame()' must be implemented.");
 	}
 }
-
-module.exports = DataSourceInterface;

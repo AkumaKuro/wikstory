@@ -1,6 +1,8 @@
-const Wikstory = require("../src/Wikstory");
-const WikstoryBuilder = require('../src/WikstoryBuilder');
-const MySQLStrategy = require("../src/dataSource/MysqlStrategy");
+export {SQLTestClass}
+
+import {Wikstory} from '../src/Wikstory'
+import {WikstoryBuilder} from '../src/WikstoryBuilder'
+import {MySQLStrategy} from '../src/dataSource/MysqlStrategy'
 
 
 class TestSQLStrategy extends MySQLStrategy {
@@ -36,5 +38,3 @@ class SQLTestClass extends Wikstory {
         await this.dataStrategy.delete();
     }
 }
-
-module.exports = SQLTestClass;
