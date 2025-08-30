@@ -1,3 +1,12 @@
+export {
+    InvalidInputError,
+    RollBackOnInitialCommit,
+    ItemNotFoundError,
+    IdenticalCommitError,
+    NoConnectError,
+    NoDisconnectError
+}
+
 class InvalidInputError extends Error{
     constructor(message) {
         super(message);
@@ -40,11 +49,3 @@ class NoDisconnectError extends Error{
     }
 }
 
-module.exports = {
-    InvalidInputError,
-    RollBackOnInitialCommit,
-    ItemNotFoundError,
-    IdenticalCommitError,
-    NoConnectError,
-    NoDisconnectError
-}
