@@ -41,7 +41,7 @@ class Wikstory {
         await this.dataStrategy.disconnect();
     }
     
-    async commit(uri, text, userName){
+    async commit(uri: string, text: string, userName: string){
 
         if (typeof(uri) != "string" || typeof(text) != "string" || typeof(userName) != "string") throw new InvalidInputError("Invalid input: 'uri, text, and userName' must be non-empty strings.");
     
@@ -132,7 +132,7 @@ class Wikstory {
         return commitHash;
     }
 
-    async rollback(uri){
+    async rollback(uri: string){
         const fileInfo = await this.dataStrategy.getFileWithCommit(uri);
 
         if (!fileInfo.parent_hash){
